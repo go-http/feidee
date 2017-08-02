@@ -51,8 +51,8 @@ func (cli *Client) CompareReportByPage(accountId int, begin, end time.Time, page
 	data.Set("m", "compare")
 	data.Set("page", strconv.Itoa(page))
 	data.Set("cardId", strconv.Itoa(accountId))
-	data.Set("endDate", end.Format("2016.01.02"))
-	data.Set("beginDate", begin.Format("2016.01.02"))
+	data.Set("endDate", end.Format("2006.01.02"))
+	data.Set("beginDate", begin.Format("2006.01.02"))
 
 	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/report.rmi", data)
 	if err != nil {
