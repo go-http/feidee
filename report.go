@@ -10,14 +10,14 @@ import (
 
 //对账报表
 type CompareInfo struct {
-	Balance    float32
-	DayBalance float32
+	Balance    float32 //当前余额
+	DayBalance float32 //当日余额（当日收入-当日支出）
 	Money      struct {
 		Claims float32
 		Income float32
-		In     float32
+		In     float32 //流入
 		Debet  float32
-		Out    float32
+		Out    float32 //留出
 		Payout float32
 	}
 	Date DateInfo
