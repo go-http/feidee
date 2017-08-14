@@ -92,7 +92,9 @@ func (cli *Client) verifyUser(vccode, email, password string) error {
 
 //自动跟踪认证跳转，完成验证信息刷新
 func (cli *Client) authRedirect(method, address string, data url.Values, jumpCount int) error {
-	log.Println("第", jumpCount, "次认证跳转", method, address, "参数", data)
+	if cli.Verbose {
+		log.Println("第", jumpCount, "次认证跳转", method, address, "参数", data)
+	}
 	if jumpCount > MaxAuthRedirectCount {
 		return fmt.Errorf("跳转次数太多")
 	}

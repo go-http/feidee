@@ -50,6 +50,8 @@ type IncomeAndPayout struct {
 type Client struct {
 	httpClient *http.Client
 
+	Verbose bool
+
 	CategoryMap    map[int]Category
 	StoreMap       map[int]IdName
 	MemberMap      map[int]IdName
