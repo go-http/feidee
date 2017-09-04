@@ -3,6 +3,7 @@ package feidee
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"sort"
 	"strconv"
@@ -38,6 +39,36 @@ type Tally struct {
 	Memo            string
 
 	Date DateInfo
+}
+
+//生成用于更新的url.Values参数
+func (t Tally) ToUpdateParams() url.Values {
+	data := url.Values{}
+
+	data.Set("id", strconv.Itoa(t.TranId))
+
+	if t.TranType == TranTypeTransfer {
+		data.Set("in_account", strconv.Itoa(t.SellerAcountId))
+		data.Set("out_account", strconv.Itoa(t.BuyerAcountId))
+	} else {
+		data.Set("account", strconv.Itoa(t.Account))
+	}
+
+	data.Set("store", strconv.Itoa(t.TransferStoreId))
+	data.Set("category", strconv.Itoa(t.CategoryId))
+	data.Set("project", strconv.Itoa(t.ProjectId))
+	data.Set("member", strconv.Itoa(t.MemberId))
+
+	data.Set("memo", t.Memo)
+	data.Set("url", t.Url)
+
+	strTime := fmt.Sprintf("%d.%d.%d %d:%d:%d", 1900+t.Date.Year, t.Date.Month+1, t.Date.Date, t.Date.Hours, t.Date.Minutes, t.Date.Seconds)
+	data.Set("time", strTime)
+
+	data.Set("price", fmt.Sprintf("%.2f", t.ItemAmount))
+	data.Set("price2", fmt.Sprintf("%.2f", t.CurrencyAmount))
+
+	return data
 }
 
 //流水组（通常是按天分组）
@@ -214,4 +245,41 @@ func (cli *Client) MonthIncomeAndPayoutMap(beginYear, endYear int) (map[int]Inco
 	}
 
 	return infoMap, nil
+}
+
+//更新交易的接口
+func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
+	data := tally.ToUpdateParams()
+	for k, vv := range updateData {
+		data.Del(k)
+		for _, v := range vv {
+			data.Add(k, v)
+		}
+	}
+
+	var tranType string
+	switch tally.TranType {
+	case TranTypePayout:
+		tranType = "payout"
+	case TranTypeTransfer:
+		tranType = "transfer"
+	case TranTypeIncome:
+		tranType = "income"
+	default:
+		return fmt.Errorf("未知的交易类型%d", tally.TranType)
+	}
+
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/tally/" + tranType +".rmi", data)
+	if err != nil {
+		return fmt.Errorf("请求出错: %s", err)
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+
+	if string(b) == "{result:'ok'}" {
+		return nil
+	}
+
+	return fmt.Errorf("请求出错: %s", string(b))
 }
