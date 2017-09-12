@@ -11,8 +11,9 @@ import (
 //账单科目
 type Category struct {
 	IdName
-	Type  int  //科目类别：支出或收入，参见TranTypeXXX常量
-	IsSub bool //是否是子科目
+	Type   int  //科目类别：支出或收入，参见TranTypeXXX常量
+	IsSub  bool //是否是子科目
+	SubIds []int
 }
 
 //初始化账本、分类、账户、商家、项目、成员等信息
@@ -49,27 +50,31 @@ func parseCategoryMap(doc *goquery.Selection) map[int]Category {
 	for i := range anchors.Nodes {
 		anchor := anchors.Eq(i)
 
-		var categoryType int
-
 		idStr, _ := anchor.Attr("id")
-		idStr = strings.TrimSuffix(idStr, "-a")
-		if strings.HasPrefix(idStr, "cCat-out-") {
-			categoryType = TranTypePayout
-			idStr = strings.TrimPrefix(idStr, "cCat-out-")
-		} else if strings.HasPrefix(idStr, "cCat-in-") {
-			categoryType = TranTypeIncome
-			idStr = strings.TrimPrefix(idStr, "cCat-in-")
-		} else {
-			continue
-		}
 
-		id, _ := strconv.Atoi(idStr)
+		id, categoryType := categoryIdTypeSplit(idStr)
 
 		category := Category{
 			Type:   categoryType,
 			IsSub:  !anchor.HasClass("ctit"),
 			IdName: IdName{Id: id, Name: anchor.Text()},
 		}
+
+		//找出子类ID
+		if !category.IsSub {
+			subArchorClass := strings.TrimSuffix(idStr, "-a")
+			subArchors := anchor.Parent().Find("a." + subArchorClass)
+
+			subIds := []int{}
+			for j := range subArchors.Nodes {
+				subIdStr, _ := subArchors.Eq(j).Attr("id")
+				subId, _ := categoryIdTypeSplit(subIdStr)
+				subIds = append(subIds, subId)
+			}
+
+			category.SubIds = subIds
+		}
+
 		categoryMap[id] = category
 	}
 
@@ -98,4 +103,22 @@ func parseIdNameMap(doc *goquery.Selection, zone string) map[int]IdName {
 	}
 
 	return idNameMap
+}
+
+//从cCat-???-??????-a格式的字符串中提取科目ID和类型
+func categoryIdTypeSplit(idStr string) (int, int) {
+	idStr = strings.TrimSuffix(idStr, "-a")
+
+	var categoryType int
+
+	if strings.HasPrefix(idStr, "cCat-out-") {
+		categoryType = TranTypePayout
+		idStr = strings.TrimPrefix(idStr, "cCat-out-")
+	} else if strings.HasPrefix(idStr, "cCat-in-") {
+		categoryType = TranTypeIncome
+		idStr = strings.TrimPrefix(idStr, "cCat-in-")
+	}
+
+	id, _ := strconv.Atoi(idStr)
+	return id, categoryType
 }
