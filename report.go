@@ -68,3 +68,49 @@ func (cli *Client) CompareReportByPage(accountId int, begin, end time.Time, page
 
 	return respInfo, nil
 }
+
+//日常收支报表
+type DailyReportList []struct {
+	IdName
+	Total float32
+	List  []struct {
+		IdName
+		Amount float32
+	} `json:"c"`
+}
+
+type DailyReport struct {
+	InAmount  float32
+	OutAmount float32
+
+	Symbol string
+	MaxIn  float32 `json:"maxI"`
+	MaxOut float32 `json:"maxO"`
+
+	InList  DailyReportList `json:"inlst"`
+	OutList DailyReportList `json:"outlst"`
+}
+
+//日常收支报表
+func (cli *Client) DailyReport(begin, end time.Time, params url.Values) (DailyReport, error) {
+	if params == nil {
+		params = url.Values{}
+	}
+	params.Set("m", "daily")
+	params.Set("endDate", end.Format("2006.01.02"))
+	params.Set("beginDate", begin.Format("2006.01.02"))
+
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/report.rmi", params)
+	if err != nil {
+		return DailyReport{}, fmt.Errorf("请求出错: %s", err)
+	}
+	defer resp.Body.Close()
+
+	var respInfo DailyReport
+	err = json.NewDecoder(resp.Body).Decode(&respInfo)
+	if err != nil {
+		return DailyReport{}, fmt.Errorf("读取出错: %s", err)
+	}
+
+	return respInfo, nil
+}
