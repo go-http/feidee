@@ -269,7 +269,7 @@ func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
 		return fmt.Errorf("未知的交易类型%d", tally.TranType)
 	}
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/tally/" + tranType +".rmi", data)
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/tally/"+tranType+".rmi", data)
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
