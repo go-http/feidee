@@ -283,3 +283,40 @@ func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
 
 	return fmt.Errorf("请求出错: %s", string(b))
 }
+
+//添加交易的接口
+//TODO:增加对其他交易类型的支持以及错误处理的支持
+func (cli *Client) PayoutCreate(tally Tally, when time.Time) error {
+	data := url.Values{}
+
+	//添加时始终为0
+	data.Set("id", "0")
+	data.Set("store", "0") //TODO:用正确的数据填充
+
+	data.Set("memo", tally.Memo)
+
+	data.Set("category", strconv.Itoa(tally.CategoryId))
+	data.Set("project", strconv.Itoa(tally.ProjectId))
+	data.Set("member", strconv.Itoa(tally.MemberId))
+	data.Set("account", strconv.Itoa(tally.Account))
+
+	data.Set("time", when.Format("2006-01-02 15:04"))
+	data.Set("price", strconv.FormatFloat(float64(tally.ItemAmount), 'f', -1, 32))
+
+	//TODO: 下面的字段不清楚
+	//data.Set("url", "")
+	//data.Set("price2", "")
+	//data.Set("in_account", "")
+	//data.Set("out_account", "")
+	//data.Set("debt_account", "")
+
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/tally/payout.rmi", data)
+	if err != nil {
+		return fmt.Errorf("请求出错: %s", err)
+	}
+	defer resp.Body.Close()
+
+	b, err := ioutil.ReadAll(resp.Body)
+
+	return fmt.Errorf(string(b))
+}
