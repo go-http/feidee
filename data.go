@@ -10,24 +10,28 @@ import (
 
 //数据导出到文件（随手记WEB版格式的xls文件）
 func (cli *Client) ExportToFile(filename string) error {
-	downloadAddr, err := cli.GetExportLink()
-	resp, err := cli.httpClient.Get(downloadAddr)
-	if err != nil {
-		return fmt.Errorf("请求出错: %s", err)
-	}
-	defer resp.Body.Close()
-
-	data, err := ioutil.ReadAll(resp.Body)
+	b, err := cli.ExportToBuffer(filename)
 	if err != nil {
 		return fmt.Errorf("读取失败: %s", err)
 	}
 
-	err = ioutil.WriteFile(filename, data, 0666)
+	err = ioutil.WriteFile(filename, b, 0666)
 	if err != nil {
 		return fmt.Errorf("保存失败: %s", err)
 	}
 
 	return nil
+}
+
+func (cli *Client) ExportToBuffer(filename string) ([]byte, error) {
+	downloadAddr, err := cli.GetExportLink()
+	resp, err := cli.httpClient.Get(downloadAddr)
+	if err != nil {
+		return nil, fmt.Errorf("请求出错: %s", err)
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
 }
 
 //获取数据导出的链接（导出为随手记WEB版格式的xls文件）
