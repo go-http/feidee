@@ -10,7 +10,7 @@ import (
 
 //数据导出到文件（随手记WEB版格式的xls文件）
 func (cli *Client) ExportToFile(filename string) error {
-	b, err := cli.ExportToBuffer(filename)
+	b, err := cli.ExportToBuffer()
 	if err != nil {
 		return fmt.Errorf("读取失败: %s", err)
 	}
@@ -23,7 +23,7 @@ func (cli *Client) ExportToFile(filename string) error {
 	return nil
 }
 
-func (cli *Client) ExportToBuffer(filename string) ([]byte, error) {
+func (cli *Client) ExportToBuffer() ([]byte, error) {
 	downloadAddr, err := cli.GetExportLink()
 	resp, err := cli.httpClient.Get(downloadAddr)
 	if err != nil {
