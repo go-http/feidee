@@ -20,7 +20,7 @@ func (cli *Client) BillEntry(id int, day time.Time, money float64) (string, erro
 
 	fmt.Printf("%#v", data)
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/bill/index.rmi", data)
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/bill/index.rmi", data)
 	if err != nil {
 		return "", fmt.Errorf("请求出错: %s", err)
 	}

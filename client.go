@@ -6,7 +6,10 @@ import (
 )
 
 //请求的基础链接地址
-const BaseUrl = "https://www.feidee.com"
+const (
+	BaseUrl  = "https://www.sui.com"
+	LoginUrl = "https://login.sui.com"
+)
 
 //交易类型
 const (

@@ -27,7 +27,7 @@ func (cli *Client) Login(email, password string) error {
 		return fmt.Errorf("验证用户名密码出错: %s", err)
 	}
 
-	err = cli.authRedirect("GET", BaseUrl+"/sso/auth.do", nil, 0)
+	err = cli.authRedirect("GET", LoginUrl+"/auth.do", nil, 0)
 	if err != nil {
 		return fmt.Errorf("请求验证参数出错: %s", err)
 	}
@@ -37,7 +37,7 @@ func (cli *Client) Login(email, password string) error {
 
 //获取VCCode
 func (cli *Client) getVccode() (string, error) {
-	resp, err := cli.httpClient.Get(BaseUrl + "/sso/login.do?opt=vccode")
+	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?opt=vccode")
 	if err != nil {
 		return "", fmt.Errorf("请求VCCode出错: %s", err)
 	}
@@ -47,6 +47,10 @@ func (cli *Client) getVccode() (string, error) {
 	err = json.NewDecoder(resp.Body).Decode(&respInfo)
 	if err != nil {
 		return "", fmt.Errorf("解析VCCode响应出错: %s", err)
+	}
+
+	if respInfo.VCCode == "" {
+		return "", fmt.Errorf("未解析到合适的VCCode")
 	}
 
 	return respInfo.VCCode, nil
@@ -64,7 +68,7 @@ func (cli *Client) verifyUser(vccode, email, password string) error {
 	data.Set("status", "1") //是否保持登录状态: 0不保持、1保持
 	data.Set("password", password)
 
-	resp, err := cli.httpClient.Get(BaseUrl + "/sso/login.do?" + data.Encode())
+	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?" + data.Encode())
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}

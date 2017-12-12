@@ -18,7 +18,7 @@ type Category struct {
 
 //初始化账本、分类、账户、商家、项目、成员等信息
 func (cli *Client) SyncMetaInfo() error {
-	resp, err := cli.httpClient.Get(BaseUrl + "/money/tally/new.do")
+	resp, err := cli.httpClient.Get(BaseUrl + "/tally/new.do")
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}

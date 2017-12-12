@@ -36,7 +36,7 @@ func (cli *Client) ExportToBuffer() ([]byte, error) {
 
 //获取数据导出的链接（导出为随手记WEB版格式的xls文件）
 func (cli *Client) GetExportLink() (string, error) {
-	addr := BaseUrl + "/money/data/index.jsp"
+	addr := BaseUrl + "/data/index.jsp"
 	resp, err := cli.httpClient.Get(addr)
 	if err != nil {
 		return "", fmt.Errorf("请求出错: %s", err)

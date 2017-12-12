@@ -54,7 +54,7 @@ func (cli *Client) CompareReportByPage(accountId int, begin, end time.Time, page
 	data.Set("endDate", end.Format("2006.01.02"))
 	data.Set("beginDate", begin.Format("2006.01.02"))
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/report.rmi", data)
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/report.rmi", data)
 	if err != nil {
 		return CompareReportResponse{}, fmt.Errorf("请求出错: %s", err)
 	}
@@ -100,7 +100,7 @@ func (cli *Client) DailyReport(begin, end time.Time, params url.Values) (DailyRe
 	params.Set("endDate", end.Format("2006.01.02"))
 	params.Set("beginDate", begin.Format("2006.01.02"))
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/money/report.rmi", params)
+	resp, err := cli.httpClient.PostForm(BaseUrl+"/report.rmi", params)
 	if err != nil {
 		return DailyReport{}, fmt.Errorf("请求出错: %s", err)
 	}

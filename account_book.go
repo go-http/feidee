@@ -11,7 +11,7 @@ import (
 
 //刷新账本列表
 func (cli *Client) SyncAccountBookList() error {
-	resp, err := cli.httpClient.Get(BaseUrl + "/money/report_index.do")
+	resp, err := cli.httpClient.Get(BaseUrl + "/report_index.do")
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
@@ -24,6 +24,10 @@ func (cli *Client) SyncAccountBookList() error {
 
 	idNameMap := map[int]IdName{}
 	lists := doc.Find("ul.s-accountbook-all li")
+	if len(lists.Nodes) == 0 {
+		return fmt.Errorf("未找到账本列表")
+	}
+
 	for i := range lists.Nodes {
 		list := lists.Eq(i)
 		name, _ := list.Attr("title")
@@ -55,7 +59,7 @@ func (cli *Client) SwitchBook(name string) error {
 	data.Set("switchId", strconv.Itoa(accountBookId))
 	data.Set("return", "xxx") //该参数必须提供但值无所谓
 
-	resp, err := cli.httpClient.Get(BaseUrl + "/money/systemSet/book.do?" + data.Encode())
+	resp, err := cli.httpClient.Get(BaseUrl + "/systemSet/book.do?" + data.Encode())
 	if err != nil {
 		return fmt.Errorf("请求错误: %s", err)
 	}
