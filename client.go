@@ -52,15 +52,9 @@ type IncomeAndPayout struct {
 //执行操作的Feidee客户端
 type Client struct {
 	httpClient *http.Client
-
-	Verbose bool
-
-	CategoryMap    map[int]Category
-	StoreMap       map[int]IdName
-	MemberMap      map[int]IdName
-	AccountMap     map[int]IdName
-	ProjectMap     map[int]IdName
-	AccountBookMap map[int]IdName
+	Verbose    bool
+	AccountBook
+	AccountBookList []IdName
 }
 
 //创建客户端

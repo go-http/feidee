@@ -32,20 +32,22 @@ func (cli *Client) SyncMetaInfo() error {
 	div := doc.Find("div#filter-bar div.fb-choose")
 
 	//解析科目信息
-	cli.CategoryMap = parseCategoryMap(div)
+	var accountBook AccountBook
+	accountBook.Categories = parseCategories(div)
 
 	//解析商家、成员、账户、项目信息
-	cli.StoreMap = parseIdNameMap(div, "store")
-	cli.MemberMap = parseIdNameMap(div, "member")
-	cli.AccountMap = parseIdNameMap(div, "account")
-	cli.ProjectMap = parseIdNameMap(div, "project")
+	accountBook.Stores = parseIdNames(div, "store")
+	accountBook.Members = parseIdNames(div, "member")
+	accountBook.Accounts = parseIdNames(div, "account")
+	accountBook.Projects = parseIdNames(div, "project")
 
+	cli.AccountBook = accountBook
 	return nil
 }
 
-//解析HTML文档生成科目Map
-func parseCategoryMap(doc *goquery.Selection) map[int]Category {
-	categoryMap := map[int]Category{}
+//解析HTML文档生成科目s
+func parseCategories(doc *goquery.Selection) []Category {
+	categories := []Category{}
 	anchors := doc.Find("div#panel-category a")
 	for i := range anchors.Nodes {
 		anchor := anchors.Eq(i)
@@ -75,17 +77,17 @@ func parseCategoryMap(doc *goquery.Selection) map[int]Category {
 			category.SubIds = subIds
 		}
 
-		categoryMap[id] = category
+		categories = append(categories, category)
 	}
 
-	return categoryMap
+	return categories
 }
 
-//解析HTML文档生成类别Map
-func parseIdNameMap(doc *goquery.Selection, zone string) map[int]IdName {
+//解析HTML文档生成类别s
+func parseIdNames(doc *goquery.Selection, zone string) []IdName {
 	prefix := "c" + strings.Title(zone[:3]) + "-"
 
-	idNameMap := map[int]IdName{}
+	idNames := []IdName{}
 	anchors := doc.Find("div#panel-" + zone + " a")
 	for i := range anchors.Nodes {
 		anchor := anchors.Eq(i)
@@ -99,10 +101,10 @@ func parseIdNameMap(doc *goquery.Selection, zone string) map[int]IdName {
 		idStr = strings.TrimPrefix(idStr, prefix)
 		id, _ := strconv.Atoi(idStr)
 
-		idNameMap[id] = IdName{Id: id, Name: anchor.Text()}
+		idNames = append(idNames, IdName{Id: id, Name: anchor.Text()})
 	}
 
-	return idNameMap
+	return idNames
 }
 
 //从cCat-???-??????-a格式的字符串中提取科目ID和类型

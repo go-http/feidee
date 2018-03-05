@@ -1,73 +1,64 @@
 package feidee
 
-import (
-	"fmt"
-	"net/http"
-	"net/url"
-	"strconv"
-
-	"github.com/PuerkitoBio/goquery"
-)
-
-//刷新账本列表
-func (cli *Client) SyncAccountBookList() error {
-	resp, err := cli.httpClient.Get(BaseUrl + "/report_index.do")
-	if err != nil {
-		return fmt.Errorf("请求出错: %s", err)
-	}
-	defer resp.Body.Close()
-
-	doc, err := goquery.NewDocumentFromResponse(resp)
-	if err != nil {
-		return fmt.Errorf("读取出错: %s", err)
-	}
-
-	idNameMap := map[int]IdName{}
-	lists := doc.Find("ul.s-accountbook-all li")
-	if len(lists.Nodes) == 0 {
-		return fmt.Errorf("未找到账本列表")
-	}
-
-	for i := range lists.Nodes {
-		list := lists.Eq(i)
-		name, _ := list.Attr("title")
-		idStr, _ := list.Attr("data-bookid")
-		id, _ := strconv.Atoi(idStr)
-
-		idNameMap[id] = IdName{Id: id, Name: name}
-	}
-
-	cli.AccountBookMap = idNameMap
-	return nil
+type AccountBook struct {
+	Categories []Category
+	Stores     []IdName
+	Members    []IdName
+	Accounts   []IdName
+	Projects   []IdName
 }
 
-//切换当前操作的账本
-func (cli *Client) SwitchBook(name string) error {
-	var accountBookId int
-	for _, info := range cli.AccountBookMap {
-		if info.Name == name {
-			accountBookId = info.Id
+//根据科目名获取科目ID
+func (accountBook AccountBook) CategoryIdByName(name string) int {
+	for _, item := range accountBook.Categories {
+		if item.Name == name {
+			return item.Id
 		}
 	}
 
-	if accountBookId == 0 {
-		return fmt.Errorf("未找到账本")
+	return 0
+}
+
+//根据商户名获取商户ID
+func (accountBook AccountBook) StoreIdByName(name string) int {
+	for _, item := range accountBook.Stores {
+		if item.Name == name {
+			return item.Id
+		}
 	}
 
-	data := url.Values{}
-	data.Set("opt", "switch")
-	data.Set("switchId", strconv.Itoa(accountBookId))
-	data.Set("return", "xxx") //该参数必须提供但值无所谓
+	return 0
+}
 
-	resp, err := cli.httpClient.Get(BaseUrl + "/systemSet/book.do?" + data.Encode())
-	if err != nil {
-		return fmt.Errorf("请求错误: %s", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("响应出错: %s", resp.Status)
+//根据成员名获取成员ID
+func (accountBook AccountBook) MemberIdByName(name string) int {
+	for _, item := range accountBook.Members {
+		if item.Name == name {
+			return item.Id
+		}
 	}
 
-	return nil
+	return 0
+}
+
+//根据账户名获取账户ID
+func (accountBook AccountBook) AccountIdByName(name string) int {
+	for _, item := range accountBook.Accounts {
+		if item.Name == name {
+			return item.Id
+		}
+	}
+
+	return 0
+}
+
+//根据项目名获取项目ID
+func (accountBook AccountBook) ProjectIdByName(name string) int {
+	for _, item := range accountBook.Projects {
+		if item.Name == name {
+			return item.Id
+		}
+	}
+
+	return 0
 }
