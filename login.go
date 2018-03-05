@@ -32,6 +32,10 @@ func (cli *Client) Login(email, password string) error {
 		return fmt.Errorf("请求验证参数出错: %s", err)
 	}
 
+	err = cli.SyncAccountBookList()
+	if err != nil {
+		return fmt.Errorf("获取账本列表失败: %s", err)
+	}
 	return nil
 }
 

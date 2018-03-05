@@ -70,5 +70,10 @@ func (cli *Client) SwitchAccountBook(name string) error {
 		return fmt.Errorf("响应出错: %s", resp.Status)
 	}
 
+	err = cli.SyncMetaInfo()
+	if err != nil {
+		return fmt.Errorf("获取账基础信息错误: %s", err)
+	}
+
 	return nil
 }
