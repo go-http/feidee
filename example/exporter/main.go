@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("刷新账本列表失败: %s", err)
 	}
 
-	err = client.SwitchBook(accountBook)
+	err = client.SwitchAccountBook(accountBook)
 	if err != nil {
 		log.Fatalf("切换账本失败: %s", err)
 	}
