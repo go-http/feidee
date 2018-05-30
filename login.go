@@ -17,12 +17,12 @@ const MaxAuthRedirectCount = 5
 
 //登录
 func (cli *Client) Login(email, password string) error {
-	vccode, err := cli.getVccode()
+	vccodeInfo, err := cli.getVccode()
 	if err != nil {
 		return fmt.Errorf("获取VCCode出错: %s", err)
 	}
 
-	err = cli.verifyUser(vccode, email, password)
+	err = cli.verifyUser(vccodeInfo, email, password)
 	if err != nil {
 		return fmt.Errorf("验证用户名密码出错: %s", err)
 	}
@@ -39,38 +39,44 @@ func (cli *Client) Login(email, password string) error {
 	return nil
 }
 
+type VCCodeInfo struct {
+	VCCode string
+	Uid    string
+}
+
 //获取VCCode
-func (cli *Client) getVccode() (string, error) {
+func (cli *Client) getVccode() (VCCodeInfo, error) {
 	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?opt=vccode")
 	if err != nil {
-		return "", fmt.Errorf("请求VCCode出错: %s", err)
+		return VCCodeInfo{}, fmt.Errorf("请求VCCode出错: %s", err)
 	}
 	defer resp.Body.Close()
 
-	var respInfo struct{ VCCode string }
+	var respInfo VCCodeInfo
 	err = json.NewDecoder(resp.Body).Decode(&respInfo)
 	if err != nil {
-		return "", fmt.Errorf("解析VCCode响应出错: %s", err)
+		return VCCodeInfo{}, fmt.Errorf("解析VCCode响应出错: %s", err)
 	}
 
 	if respInfo.VCCode == "" {
-		return "", fmt.Errorf("未解析到合适的VCCode")
+		return VCCodeInfo{}, fmt.Errorf("未解析到合适的VCCode")
 	}
 
-	return respInfo.VCCode, nil
+	return respInfo, nil
 }
 
 //鉴定用户
-func (cli *Client) verifyUser(vccode, email, password string) error {
+func (cli *Client) verifyUser(vccodeInfo VCCodeInfo, email, password string) error {
 	//密码加密处理
 	password = hexSha1(password)
 	password = hexSha1(email + password)
-	password = hexSha1(password + vccode)
+	password = hexSha1(password + vccodeInfo.VCCode)
 
 	data := url.Values{}
 	data.Set("email", email)
 	data.Set("status", "1") //是否保持登录状态: 0不保持、1保持
 	data.Set("password", password)
+	data.Set("uid", vccodeInfo.Uid)
 
 	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?" + data.Encode())
 	if err != nil {
