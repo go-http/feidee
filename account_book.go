@@ -8,6 +8,16 @@ type AccountBook struct {
 	Projects   []IdName
 }
 
+//根据科目名获取科目ID为索引的Map
+func (accountBook AccountBook) CategoryIdMap() map[int]Category {
+	m := make(map[int]Category)
+	for _, category := range accountBook.Categories {
+		m[category.Id] = category
+	}
+
+	return m
+}
+
 //根据科目名获取科目ID
 func (accountBook AccountBook) CategoryIdByName(name string) int {
 	for _, item := range accountBook.Categories {
