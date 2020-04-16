@@ -238,7 +238,6 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	data.Set("category", strconv.Itoa(tally.CategoryId))
 	data.Set("project", strconv.Itoa(tally.ProjectId))
 	data.Set("member", strconv.Itoa(tally.MemberId))
-	data.Set("account", strconv.Itoa(tally.Account))
 
 	data.Set("time", when.Format("2006-01-02 15:04"))
 	data.Set("price", strconv.FormatFloat(float64(tally.ItemAmount), 'f', -1, 32))
@@ -253,8 +252,14 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	var targetUri string
 	if tally.TranType == TranTypeIncome {
 		targetUri = BaseUrl + "/tally/income.rmi"
+		data.Set("account", strconv.Itoa(tally.Account))
 	} else if tally.TranType == TranTypePayout {
 		targetUri = BaseUrl + "/tally/payout.rmi"
+		data.Set("account", strconv.Itoa(tally.Account))
+	} else if tally.TranType == TranTypeTransfer {
+		targetUri = BaseUrl + "/tally/transfer.rmi"
+		data.Set("in_account", strconv.Itoa(tally.SellerAcountId))
+		data.Set("out_account", strconv.Itoa(tally.BuyerAcountId))
 	} else {
 		return fmt.Errorf("不支持的交易类型: %s", tally.TranType)
 	}
