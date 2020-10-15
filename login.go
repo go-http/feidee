@@ -46,7 +46,7 @@ type VCCodeInfo struct {
 
 //获取VCCode
 func (cli *Client) getVccode() (VCCodeInfo, error) {
-	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?opt=vccode")
+	resp, err := cli.Get(LoginUrl + "/login.do?opt=vccode")
 	if err != nil {
 		return VCCodeInfo{}, fmt.Errorf("请求VCCode出错: %s", err)
 	}
@@ -78,7 +78,7 @@ func (cli *Client) verifyUser(vccodeInfo VCCodeInfo, email, password string) err
 	data.Set("password", password)
 	data.Set("uid", vccodeInfo.Uid)
 
-	resp, err := cli.httpClient.Get(LoginUrl + "/login.do?" + data.Encode())
+	resp, err := cli.Get(LoginUrl + "/login.do?" + data.Encode())
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
@@ -116,9 +116,9 @@ func (cli *Client) authRedirect(method, address string, data url.Values, jumpCou
 	var err error
 	var resp *http.Response
 	if method == "POST" {
-		resp, err = cli.httpClient.PostForm(address, data)
+		resp, err = cli.PostForm(address, data)
 	} else if method == "GET" {
-		resp, err = cli.httpClient.Get(address + "?" + data.Encode())
+		resp, err = cli.Get(address + "?" + data.Encode())
 	} else {
 		return fmt.Errorf("未知跳转方法%s", method)
 	}

@@ -11,7 +11,7 @@ import (
 
 //刷新账本列表
 func (cli *Client) SyncAccountBookList() error {
-	resp, err := cli.httpClient.Get(BaseUrl + "/report_index.do")
+	resp, err := cli.Get(BaseUrl + "/report_index.do")
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
@@ -60,7 +60,7 @@ func (cli *Client) SwitchAccountBook(name string) error {
 	data.Set("switchId", strconv.Itoa(accountBookId))
 	data.Set("return", "xxx") //该参数必须提供但值无所谓
 
-	resp, err := cli.httpClient.Get(BaseUrl + "/systemSet/book.do?" + data.Encode())
+	resp, err := cli.Get(BaseUrl + "/systemSet/book.do?" + data.Encode())
 	if err != nil {
 		return fmt.Errorf("请求错误: %s", err)
 	}
