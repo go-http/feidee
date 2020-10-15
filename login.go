@@ -52,6 +52,10 @@ func (cli *Client) getVccode() (VCCodeInfo, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return VCCodeInfo{}, fmt.Errorf("请求VCCode出错: %s", resp.Status)
+	}
+
 	var respInfo VCCodeInfo
 	err = json.NewDecoder(resp.Body).Decode(&respInfo)
 	if err != nil {
