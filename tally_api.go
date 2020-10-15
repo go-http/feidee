@@ -140,7 +140,7 @@ func (cli *Client) tallyListByPage(begin, end time.Time, data url.Values, page i
 		data.Set("memids", "0")
 	}
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/tally/new.rmi", data)
+	resp, err := cli.PostForm(BaseUrl+"/tally/new.rmi", data)
 	if err != nil {
 		return TallyResponseInfo{}, fmt.Errorf("请求出错: %s", err)
 	}
@@ -162,7 +162,7 @@ func (cli *Client) MonthIncomeAndPayoutMap(beginYear, endYear int) (map[int]Inco
 	data.Set("endYear", strconv.Itoa(endYear))
 	data.Set("beginYear", strconv.Itoa(beginYear))
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/tally/new.rmi", data)
+	resp, err := cli.PostForm(BaseUrl+"/tally/new.rmi", data)
 	if err != nil {
 		return nil, fmt.Errorf("请求出错: %s", err)
 	}
@@ -210,7 +210,7 @@ func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
 		return fmt.Errorf("未知的交易类型%d", tally.TranType)
 	}
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/tally/"+tranType+".rmi", data)
+	resp, err := cli.PostForm(BaseUrl+"/tally/"+tranType+".rmi", data)
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
@@ -264,7 +264,7 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 		return fmt.Errorf("不支持的交易类型: %s", tally.TranType)
 	}
 
-	resp, err := cli.httpClient.PostForm(targetUri, data)
+	resp, err := cli.PostForm(targetUri, data)
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
@@ -287,7 +287,7 @@ func (cli *Client) TallyDelete(tranIds ...string) error {
 	data.Set("opt", "batchDel")
 	data.Set("ids", strings.Join(tranIds, ","))
 
-	resp, err := cli.httpClient.PostForm(BaseUrl+"/tally/new.rmi", data)
+	resp, err := cli.PostForm(BaseUrl+"/tally/new.rmi", data)
 	if err != nil {
 		return fmt.Errorf("请求出错: %s", err)
 	}
