@@ -34,7 +34,9 @@ func (cli *Client) SyncAccountBookList() error {
 		idStr, _ := list.Attr("data-bookid")
 		id, _ := strconv.Atoi(idStr)
 
-		idNames = append(idNames, IdName{Id: id, Name: name})
+		if id != 0 && name != "" {
+			idNames = append(idNames, IdName{Id: id, Name: name})
+		}
 	}
 
 	cli.AccountBookList = idNames
