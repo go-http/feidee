@@ -5,11 +5,8 @@
 
 ## 创建并初始化客户端
 ```go
-	//创建客户端
-	client := feidee.New()
-
-	//登录
-	err := client.Login("username", "password")
+	//创建客户端并登录
+	client := feidee.New("username", "password")
 	if err != nil {
 		return fmt.Errorf("登录失败:%s", err)
 	}
