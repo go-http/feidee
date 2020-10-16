@@ -1,4 +1,4 @@
-module github.com/go-http/feidee
+module github.com/go-http/feidee/v2
 
 go 1.14
 

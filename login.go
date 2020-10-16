@@ -16,7 +16,7 @@ import (
 const MaxAuthRedirectCount = 5
 
 //登录
-func (cli *Client) Login(email, password string) error {
+func (cli *Client) login(email, password string) error {
 	vccodeInfo, err := cli.getVccode()
 	if err != nil {
 		return fmt.Errorf("获取VCCode出错: %s", err)

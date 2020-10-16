@@ -57,8 +57,14 @@ type Client struct {
 	AccountBookList []IdName
 }
 
-//创建客户端
-func New() *Client {
+// 创建客户端
+func New(email, password string) (*Client, error) {
 	cookieJar, _ := cookiejar.New(nil)
-	return &Client{httpClient: &http.Client{Jar: cookieJar}}
+	cli := &Client{httpClient: &http.Client{Jar: cookieJar}}
+	err := cli.login(email, password)
+	if err != nil {
+		return nil, err
+	}
+
+	return cli, nil
 }
