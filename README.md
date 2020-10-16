@@ -1,4 +1,4 @@
-# feidee [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/go-http/feidee)](https://pkg.go.dev/mod/github.com/go-http/feidee)
+# feidee [![PkgGoDev](https://pkg.go.dev/badge/mod/github.com/go-http/feidee/v2)](https://pkg.go.dev/mod/github.com/go-http/feidee/v2)
 随手记API
 
 # Usage
