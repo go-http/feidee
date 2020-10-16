@@ -3,6 +3,7 @@ package feidee
 import (
 	"net/http"
 	"net/http/cookiejar"
+	"os"
 )
 
 //请求的基础链接地址
@@ -67,4 +68,12 @@ func New(email, password string) (*Client, error) {
 	}
 
 	return cli, nil
+}
+
+// 从环境变量中创建一个新客户端
+// 用户名、密码对应的环境变量分别为FEIDEE_USERNAME、FEIDEE_PASSWORD
+func NewFromEnv() (*Client, error) {
+	username := os.Getenv("FEIDEE_USERNAME")
+	password := os.Getenv("FEIDEE_PASSWORD")
+	return New(username, password)
 }
