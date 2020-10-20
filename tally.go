@@ -19,6 +19,7 @@ type Tally struct {
 	TranName       string
 	ProjectId      int
 	ProjectName    string
+	StoreId        int    //商户ID
 	SellerAcount   string //转账时表示转入账户
 	SellerAcountId int    //转账时表示转入账户
 

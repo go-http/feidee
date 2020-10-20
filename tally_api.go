@@ -231,10 +231,10 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 
 	//添加时始终为0
 	data.Set("id", "0")
-	data.Set("store", "0") //TODO:用正确的数据填充
 
 	data.Set("memo", tally.Memo)
 
+	data.Set("store", strconv.Itoa(tally.StoreId))
 	data.Set("category", strconv.Itoa(tally.CategoryId))
 	data.Set("project", strconv.Itoa(tally.ProjectId))
 	data.Set("member", strconv.Itoa(tally.MemberId))
