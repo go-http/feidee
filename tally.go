@@ -26,14 +26,13 @@ type Tally struct {
 	ItemAmount     float32 //交易金额，转账时该数值和CurrencyAmount相同
 	CurrencyAmount float32 //转账金额
 
-	Relation        string
-	CategoryIcon    string
-	Url             string
-	Content         string
-	ImgId           int
-	TranId          int
-	TransferStoreId int
-	Memo            string
+	Relation     string
+	CategoryIcon string
+	Url          string
+	Content      string
+	ImgId        int
+	TranId       int
+	Memo         string
 
 	Date DateInfo
 }
@@ -51,7 +50,8 @@ func (t Tally) ToUpdateParams() url.Values {
 		data.Set("account", strconv.Itoa(t.Account))
 	}
 
-	data.Set("store", strconv.Itoa(t.TransferStoreId))
+	data.Set("store", strconv.Itoa(t.StoreId))
+
 	data.Set("category", strconv.Itoa(t.CategoryId))
 	data.Set("project", strconv.Itoa(t.ProjectId))
 	data.Set("member", strconv.Itoa(t.MemberId))
