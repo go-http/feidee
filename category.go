@@ -40,9 +40,9 @@ func (cli *Client) SyncMetaInfo() error {
 	accountBook.Members = parseIdNames(div, "member")
 	accountBook.Accounts = parseIdNames(div, "account")
 	accountBook.Projects = parseIdNames(div, "project")
-
+	accountBook.AccountInfoList = make(map[int64]AccountInfo)
 	cli.AccountBook = accountBook
-	return nil
+	return cli.SyncAccountInfoList()
 }
 
 //解析HTML文档生成科目s
