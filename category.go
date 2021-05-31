@@ -42,7 +42,7 @@ func (cli *Client) SyncMetaInfo() error {
 	accountBook.Projects = parseIdNames(div, "project")
 
 	cli.AccountBook = accountBook
-	return nil
+	return cli.SyncAccountInfoList()
 }
 
 //解析HTML文档生成科目s
