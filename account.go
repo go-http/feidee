@@ -8,7 +8,7 @@ import (
 )
 
 type AccountInfo struct {
-	Id   int
+	Id   int64
 	Name string
 
 	// 账户当前余额
@@ -38,12 +38,13 @@ func (cli *Client) SyncAccountInfoList() error {
 			return fmt.Errorf("读取账户余额出错: %s", err)
 		}
 		currencySelection := selection.Find(".child-r1-currency")
-		cli.AccountInfoList = append(cli.AccountInfoList, AccountInfo{
-			Id:       account.Id,
+		accountId := int64(account.Id)
+		cli.AccountInfoList[accountId] = AccountInfo{
+			Id:       int64(account.Id),
 			Name:     account.Name,
 			Money:    money,
 			Currency: currencySelection.Text(),
-		})
+		}
 	}
 	return nil
 }

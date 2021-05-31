@@ -6,7 +6,7 @@ type AccountBook struct {
 	Members         []IdName
 	Accounts        []IdName
 	Projects        []IdName
-	AccountInfoList []AccountInfo
+	AccountInfoList map[int64]AccountInfo
 }
 
 //根据科目名获取科目ID为索引的Map
