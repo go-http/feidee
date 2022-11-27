@@ -39,7 +39,7 @@ func (cli *Client) SyncAccountInfoList() error {
 		}
 		currencySelection := selection.Find(".child-r1-currency")
 		accountId := int64(account.Id)
-		cli.AccountInfoList[accountId] = AccountInfo{
+		cli.AccountInfoMap[accountId] = AccountInfo{
 			Id:       int64(account.Id),
 			Name:     account.Name,
 			Money:    money,

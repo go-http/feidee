@@ -1,12 +1,12 @@
 package feidee
 
 type AccountBook struct {
-	Categories      []Category
-	Stores          []IdName
-	Members         []IdName
-	Accounts        []IdName
-	Projects        []IdName
-	AccountInfoList map[int64]AccountInfo
+	Categories     []Category
+	Stores         []IdName
+	Members        []IdName
+	Accounts       []IdName
+	Projects       []IdName
+	AccountInfoMap map[int64]AccountInfo
 }
 
 //根据科目名获取科目ID为索引的Map

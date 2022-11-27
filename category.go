@@ -40,7 +40,7 @@ func (cli *Client) SyncMetaInfo() error {
 	accountBook.Members = parseIdNames(div, "member")
 	accountBook.Accounts = parseIdNames(div, "account")
 	accountBook.Projects = parseIdNames(div, "project")
-	accountBook.AccountInfoList = make(map[int64]AccountInfo)
+	accountBook.AccountInfoMap = make(map[int64]AccountInfo)
 	cli.AccountBook = accountBook
 	return cli.SyncAccountInfoList()
 }
