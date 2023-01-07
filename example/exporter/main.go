@@ -2,7 +2,7 @@
 package main
 
 import (
-	"../.."
+	"github.com/go-http/feidee/v2"
 
 	"flag"
 	"log"
@@ -23,8 +23,7 @@ func main() {
 		return
 	}
 
-	client := feidee.New()
-	err := client.Login(username, password)
+	client, err := feidee.New(username, password)
 	if err != nil {
 		log.Fatalf("登录失败:%s", err)
 	}
