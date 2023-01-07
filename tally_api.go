@@ -250,6 +250,8 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	//data.Set("debt_account", "")
 
 	var targetUri string
+	apiResponsePattern := regexp.MustCompile("id:{id:[0-9]+},")
+
 	if tally.TranType == TranTypeIncome {
 		targetUri = BaseUrl + "/tally/income.rmi"
 		data.Set("account", strconv.Itoa(tally.Account))
@@ -258,6 +260,7 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 		data.Set("account", strconv.Itoa(tally.Account))
 	} else if tally.TranType == TranTypeTransfer {
 		targetUri = BaseUrl + "/tally/transfer.rmi"
+		apiResponsePattern = regexp.MustCompile(`id:{outId:\d+,inId:\d+}`)
 		data.Set("in_account", strconv.Itoa(tally.SellerAcountId))
 		data.Set("out_account", strconv.Itoa(tally.BuyerAcountId))
 	} else {
@@ -273,8 +276,7 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	b, err := ioutil.ReadAll(resp.Body)
 
 	//检查返回数据是否合法
-	r := regexp.MustCompile("id:{id:[0-9]+},")
-	if r.Match(b) {
+	if apiResponsePattern.Match(b) {
 		return nil
 	}
 
