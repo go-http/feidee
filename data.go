@@ -8,7 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-//数据导出到文件（随手记WEB版格式的xls文件）
+// 数据导出到文件（随手记WEB版格式的xls文件）
 func (cli *Client) ExportToFile(filename string) error {
 	b, err := cli.ExportToBuffer()
 	if err != nil {
@@ -34,7 +34,7 @@ func (cli *Client) ExportToBuffer() ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-//获取数据导出的链接（导出为随手记WEB版格式的xls文件）
+// 获取数据导出的链接（导出为随手记WEB版格式的xls文件）
 func (cli *Client) GetExportLink() (string, error) {
 	addr := BaseUrl + "/data/index.jsp"
 	resp, err := cli.Get(addr)

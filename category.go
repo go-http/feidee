@@ -8,7 +8,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-//账单科目
+// 账单科目
 type Category struct {
 	IdName
 	Type   int  //科目类别：支出或收入，参见TranTypeXXX常量
@@ -16,7 +16,7 @@ type Category struct {
 	SubIds []int
 }
 
-//初始化账本、分类、账户、商家、项目、成员等信息
+// 初始化账本、分类、账户、商家、项目、成员等信息
 func (cli *Client) SyncMetaInfo() error {
 	resp, err := cli.Get(BaseUrl + "/tally/new.do")
 	if err != nil {
@@ -45,7 +45,7 @@ func (cli *Client) SyncMetaInfo() error {
 	return nil
 }
 
-//解析HTML文档生成科目s
+// 解析HTML文档生成科目s
 func parseCategories(doc *goquery.Selection) []Category {
 	categories := []Category{}
 	anchors := doc.Find("div#panel-category a")
@@ -83,7 +83,7 @@ func parseCategories(doc *goquery.Selection) []Category {
 	return categories
 }
 
-//解析HTML文档生成类别s
+// 解析HTML文档生成类别s
 func parseIdNames(doc *goquery.Selection, zone string) []IdName {
 	prefix := "c" + strings.Title(zone[:3]) + "-"
 
@@ -107,7 +107,7 @@ func parseIdNames(doc *goquery.Selection, zone string) []IdName {
 	return idNames
 }
 
-//从cCat-???-??????-a格式的字符串中提取科目ID和类型
+// 从cCat-???-??????-a格式的字符串中提取科目ID和类型
 func categoryIdTypeSplit(idStr string) (int, int) {
 	idStr = strings.TrimSuffix(idStr, "-a")
 

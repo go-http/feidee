@@ -12,10 +12,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-//自动跳转以刷新认证信息时，最大的递归调用次数
+// 自动跳转以刷新认证信息时，最大的递归调用次数
 const MaxAuthRedirectCount = 5
 
-//登录
+// 登录
 func (cli *Client) login(email, password string) error {
 	vccodeInfo, err := cli.getVccode()
 	if err != nil {
@@ -44,7 +44,7 @@ type VCCodeInfo struct {
 	Uid    string
 }
 
-//获取VCCode
+// 获取VCCode
 func (cli *Client) getVccode() (VCCodeInfo, error) {
 	resp, err := cli.Get(LoginUrl + "/login.do?opt=vccode")
 	if err != nil {
@@ -69,7 +69,7 @@ func (cli *Client) getVccode() (VCCodeInfo, error) {
 	return respInfo, nil
 }
 
-//鉴定用户
+// 鉴定用户
 func (cli *Client) verifyUser(vccodeInfo VCCodeInfo, email, password string) error {
 	//密码加密处理
 	password = hexSha1(password)
@@ -108,7 +108,7 @@ func (cli *Client) verifyUser(vccodeInfo VCCodeInfo, email, password string) err
 	}
 }
 
-//自动跟踪认证跳转，完成验证信息刷新
+// 自动跟踪认证跳转，完成验证信息刷新
 func (cli *Client) authRedirect(method, address string, data url.Values, jumpCount int) error {
 	if cli.Verbose {
 		log.Println("第", jumpCount, "次认证跳转", method, address, "参数", data)
@@ -163,7 +163,7 @@ func (cli *Client) authRedirect(method, address string, data url.Values, jumpCou
 	return cli.authRedirect(formMethod, formAction, formData, jumpCount+1)
 }
 
-//密码加密,算法来自于: https://www.feidee.com/sso/js/fdLogin.js中的hex_sha1
+// 密码加密,算法来自于: https://www.feidee.com/sso/js/fdLogin.js中的hex_sha1
 func hexSha1(input string) string {
 	sha1Sum := sha1.Sum([]byte(input))
 	return hex.EncodeToString(sha1Sum[:])

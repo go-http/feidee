@@ -9,7 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-//刷新账本列表
+// 刷新账本列表
 func (cli *Client) SyncAccountBookList() error {
 	resp, err := cli.Get(BaseUrl + "/report_index.do")
 	if err != nil {
@@ -43,7 +43,7 @@ func (cli *Client) SyncAccountBookList() error {
 	return nil
 }
 
-//切换账本
+// 切换账本
 func (cli *Client) SwitchAccountBook(name string) error {
 	var accountBookId int
 	for _, accountBook := range cli.AccountBookList {

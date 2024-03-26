@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-//流水信息
+// 流水信息
 type Tally struct {
 	Account        int
 	BuyerAcount    string //支出、收入时为交易账户，转账时为转出账户
@@ -37,7 +37,7 @@ type Tally struct {
 	Date DateInfo
 }
 
-//生成用于更新的url.Values参数
+// 生成用于更新的url.Values参数
 func (t Tally) ToUpdateParams() url.Values {
 	data := url.Values{}
 

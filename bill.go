@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 )
 
-//周期账手动入账
+// 周期账手动入账
 func (cli *Client) BillEntry(id int, day time.Time, money float64) (string, error) {
 	data := url.Values{}
 	data.Set("opt", "entry")

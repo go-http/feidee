@@ -12,13 +12,13 @@ import (
 	"time"
 )
 
-//流水组（通常是按天分组）
+// 流水组（通常是按天分组）
 type TallyGroup struct {
 	IncomeAndPayout
 	List []Tally
 }
 
-//查询流水接口的响应
+// 查询流水接口的响应
 type TallyResponseInfo struct {
 	IncomeAndPayout
 	PageNo    int
@@ -29,11 +29,12 @@ type TallyResponseInfo struct {
 	Groups    []TallyGroup
 }
 
-//获取流水，可用参数包括
-//    bids账户、cids科目、mids类型、pids项目、sids商户、memids成员，这几个参数都是逗号分割的ID列表
-//    order:  排序字段，支持: project_id项目排序、buyer_name账户、item_amount金额、tran_type类型、category_id科目、tran_time时间
-//    isDesc: 是否降序，0升序、1降序
-//    note:   搜备注关键字
+// 获取流水，可用参数包括
+//
+//	bids账户、cids科目、mids类型、pids项目、sids商户、memids成员，这几个参数都是逗号分割的ID列表
+//	order:  排序字段，支持: project_id项目排序、buyer_name账户、item_amount金额、tran_type类型、category_id科目、tran_time时间
+//	isDesc: 是否降序，0升序、1降序
+//	note:   搜备注关键字
 func (cli *Client) TallyList(begin, end time.Time, data url.Values) (TallyResponseInfo, error) {
 	//先取出所有页的信息构成一个Slices
 	pageCount := 1
@@ -155,7 +156,7 @@ func (cli *Client) tallyListByPage(begin, end time.Time, data url.Values, page i
 	return respInfo, nil
 }
 
-//获取按月汇总的收支情况，key为201707格式
+// 获取按月汇总的收支情况，key为201707格式
 func (cli *Client) MonthIncomeAndPayoutMap(beginYear, endYear int) (map[int]IncomeAndPayout, error) {
 	data := url.Values{}
 	data.Set("opt", "someYearSum")
@@ -188,7 +189,7 @@ func (cli *Client) MonthIncomeAndPayoutMap(beginYear, endYear int) (map[int]Inco
 	return infoMap, nil
 }
 
-//更新交易的接口
+// 更新交易的接口
 func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
 	data := tally.ToUpdateParams()
 	for k, vv := range updateData {
@@ -225,7 +226,7 @@ func (cli *Client) TallyUpdate(tally Tally, updateData url.Values) error {
 	return fmt.Errorf("请求出错: %s", string(b))
 }
 
-//添加交易的接口 //TODO:增加对其他交易类型的支持
+// 添加交易的接口 //TODO:增加对其他交易类型的支持
 func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	data := url.Values{}
 
@@ -283,7 +284,7 @@ func (cli *Client) TallyCreate(tally Tally, when time.Time) error {
 	return fmt.Errorf(string(b))
 }
 
-//（批量）删除交易的接口
+// （批量）删除交易的接口
 func (cli *Client) TallyDelete(tranIds ...string) error {
 	data := url.Values{}
 	data.Set("opt", "batchDel")

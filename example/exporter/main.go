@@ -1,4 +1,4 @@
-//随手记导出工具
+// 随手记导出工具
 package main
 
 import (
