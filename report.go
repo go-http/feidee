@@ -114,3 +114,40 @@ func (cli *Client) DailyReport(begin, end time.Time, params url.Values) (DailyRe
 
 	return respInfo, nil
 }
+
+type AssetReportList []struct {
+	Name   string
+	Symbol string
+	Amount float32
+}
+
+type AssetReport struct {
+	InAbsAmount  float32
+	InAmount     float32
+	InList       AssetReportList `json:"inlst"`  //原始币种金额
+	InListR      AssetReportList `json:"inlstr"` //外币自动折算成人民币
+	OutAbsAmount float32
+	OutAmount    float32
+	OutList      AssetReportList `json:"outlst"`  //原始币种金额
+	OutListR     AssetReportList `json:"outlstr"` //外币自动折算成人民币
+	Symbol       string
+}
+
+// 资产负债表
+func (cli *Client) AssetReport() (AssetReport, error) {
+	params := url.Values{"m": {"asset"}}
+
+	resp, err := cli.PostForm(BaseUrl+"/report.rmi", params)
+	if err != nil {
+		return AssetReport{}, fmt.Errorf("请求出错: %s", err)
+	}
+	defer resp.Body.Close()
+
+	var respInfo AssetReport
+	err = json.NewDecoder(resp.Body).Decode(&respInfo)
+	if err != nil {
+		return AssetReport{}, fmt.Errorf("读取出错: %s", err)
+	}
+
+	return respInfo, nil
+}
