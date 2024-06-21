@@ -14,7 +14,7 @@ func (cli *Client) PostForm(url string, data url.Values) (resp *http.Response, e
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Set("User-Agent", httpUserAgent)
 
 	return cli.httpClient.Do(req)
